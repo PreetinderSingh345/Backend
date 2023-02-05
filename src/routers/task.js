@@ -1,6 +1,6 @@
 const express = require('express');
 const { getTask, getTasks, postTask, putTask, patchTask, deleteTask } = require('../controllers/task');
-const {getTasksValidator, postTaskValidator, putTaskValidator, patchTaskValidator, deleteTaskValidator} = require('../middleware/taskValidator');
+const {getTasksValidator, postTaskValidator, putTaskValidator, patchTaskValidator, deleteTaskValidator} = require('../middlewares/taskValidator');
 
 const taskRouter = express.Router();
 
