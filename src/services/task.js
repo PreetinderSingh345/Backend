@@ -1,4 +1,5 @@
 const { Task } = require('../../database/models/index');
+const HttpError = require('../../src/utils/errors/HttpError');
 
 const getTasks = async () => {
   const tasks = await Task.findAll();
@@ -13,6 +14,10 @@ const getTask = async (id) => {
     }
   });
 
+  if (task === null) {
+    throw new HttpError(404, 'Task not found');
+  }
+
   return task;
 };
 
@@ -26,27 +31,33 @@ const postTask = async (description) => {
 };
 
 const putTask = async (changedTask) => {
-  const updated = await Task.update({...changedTask}, {
+  const updated = await Task.update({ ...changedTask }, {
     where: {
       id: changedTask.id
     }
   });
 
-  const msg = updated[0] ? 'Task updated successfully': 'Unable to update Task';
+  if(updated[0] === 0) {
+    throw new HttpError(404, 'Task not found');
+  }
+
+  const msg = 'Task updated successfully';
 
   return msg;
 };
 
 const patchTask = async (id, changedFields) => {
-  const updated = await Task.update({...changedFields}, {
+  const updated = await Task.update({ ...changedFields }, {
     where: {
       id: id
     }
   });
 
-  console.log(updated);
+  if(updated[0] === 0) {
+    throw new HttpError(404, 'Task not found');
+  }
 
-  const msg = updated[0] ? 'Task updated successfully': 'Unable to update Task';
+  const msg = 'Task updated successfully';
 
   return msg;
 };
@@ -58,9 +69,11 @@ const deleteTask = async (id) => {
     }
   });
 
-  console.log(deleted);
+  if(deleted === 0) {
+    throw new HttpError(404, 'Task not found');
+  }
 
-  const msg = deleted ? 'Task deleted successfully': 'Unable to delete Task';
+  const msg = 'Task deleted successfully';
 
   return msg;
 };

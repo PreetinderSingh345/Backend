@@ -1,6 +1,7 @@
 const { describe, it, expect } = require('@jest/globals');
 const taskServices = require('../../src/services/task');
 const taskController = require('../../src/controllers/task');
+const HttpError = require('../../src/utils/errors/HttpError');
 
 describe('Task services', () => {
   describe('getTasks', () => {
@@ -50,6 +51,48 @@ describe('Task services', () => {
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockRes.status().json).toHaveBeenCalledWith(resolvedValue);
+    });
+
+    it('should throw an error when the id does not exits', async () => {
+      jest.spyOn(taskServices, 'getTask').mockImplementation(() => {
+        throw new HttpError(404, 'Task not found');
+      });
+
+      const mockReq = {
+        params: {
+          id: 1
+        }
+      };
+      
+      const mockRes = {
+        status: jest.fn().mockReturnValue({ send: jest.fn() })
+      }
+
+      await taskController.getTask(mockReq, mockRes);
+
+      expect(mockRes.status).toHaveBeenCalledWith(404);
+      expect(mockRes.status().send).toHaveBeenCalledWith('Task not found');
+    });
+
+    it('should throw an error when there is an unexpected error', async () => {
+      jest.spyOn(taskServices, 'getTask').mockImplementation(() => {
+        throw new Error('Something went wrong');
+      });
+
+      const mockReq = {
+        params: {
+          id: 1
+        }
+      };
+
+      const mockRes = {
+        status: jest.fn().mockReturnValue({ send: jest.fn() })
+      };
+
+      await taskController.getTask(mockReq, mockRes);
+
+      expect(mockRes.status).toHaveBeenCalledWith(500);
+      expect(mockRes.status().send).toHaveBeenCalledWith('Something went wrong');
     });
   });
 

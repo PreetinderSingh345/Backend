@@ -35,6 +35,16 @@ describe('Task services', () => {
 
       expect(returnedValue).toEqual(resolvedValue);
     });
+
+    it('should throw an error if the task does not exist', async () => {
+      const resolvedValue = null;
+
+      jest.spyOn(Task, 'findOne').mockResolvedValue(resolvedValue);
+
+      const mockId = 123;
+
+      await expect(taskServices.getTask(mockId)).rejects.toThrow('Task not found');
+    });
   });
 
   describe('postTask', () =>{
@@ -71,6 +81,20 @@ describe('Task services', () => {
 
       expect(returnedValue).toEqual(resolvedValue);
     });
+
+    it('should throw an error if the task does not exist', async () => {
+      const resoledValue = [0];
+
+      jest.spyOn(Task, 'update').mockResolvedValue(resoledValue);
+
+      const mockTask = {
+        id: 123,
+        description: 'learn backend',
+        isComplete: false
+      };
+
+      await expect(taskServices.putTask(mockTask)).rejects.toThrow('Task not found');
+    });
   });
 
   describe('patchTask', () =>{
@@ -90,6 +114,21 @@ describe('Task services', () => {
 
       expect(returnedValue).toEqual(resolvedValue);
     });
+
+    it('should throw an error if the task does not exist', async () => {
+      const resolvedValue = [0];
+
+      jest.spyOn(Task, 'update').mockResolvedValue(resolvedValue);
+      
+      const mockId = 123;
+
+      const mockTask = {
+        description: 'learn backend',
+        isComplete: false
+      };
+
+      await expect(taskServices.patchTask(mockId, mockTask)).rejects.toThrow('Task not found');
+    });
   });
 
   describe('deleteTask', () =>{
@@ -103,6 +142,16 @@ describe('Task services', () => {
       const returnedValue = await taskServices.deleteTask(mockId);
 
       expect(returnedValue).toEqual(resolvedValue);
+    });
+
+    it('should throw an error if the task does not exit', async () => {
+      const resolvedValue = 0;
+
+      jest.spyOn(Task, 'destroy').mockResolvedValue(resolvedValue);
+
+      const mockId = 123;
+
+      await expect(taskServices.deleteTask(mockId)).rejects.toThrow('Task not found');
     });
   });
 });

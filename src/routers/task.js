@@ -1,11 +1,11 @@
 const express = require('express');
 const { getTask, getTasks, postTask, putTask, patchTask, deleteTask } = require('../controllers/task');
-const {getTasksValidator, postTaskValidator, putTaskValidator, patchTaskValidator, deleteTaskValidator} = require('../middlewares/taskValidator');
+const {getTaskValidator, postTaskValidator, putTaskValidator, patchTaskValidator, deleteTaskValidator} = require('../middlewares/taskValidator');
 
 const taskRouter = express.Router();
 
 taskRouter.get('/', getTasks);
-taskRouter.get('/:id', getTasksValidator, getTask);
+taskRouter.get('/:id', getTaskValidator, getTask);
 
 taskRouter.post('/', postTaskValidator, postTask);
 

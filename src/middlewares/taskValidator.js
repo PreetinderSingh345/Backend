@@ -1,7 +1,7 @@
 const { getTaskSchema, postTaskSchema, putTaskSchema, patchTaskSchema, deleteTaskSchema } = require('../schemas/joiTask');
 const HttpError = require('../utils/errors/HttpError');
 
-const getTasksValidator = (req, res, next) => {
+const getTaskValidator = (req, res, next) => {
     try {
         const {id} = req.params;
 
@@ -10,11 +10,11 @@ const getTasksValidator = (req, res, next) => {
         if(error) {
             throw new HttpError(400, error.details[0].message);
         }
-    
-        next();    
-    } catch(err) {
-        if(err instanceof HttpError) {
-            res.status(err.statusCode).send(err.message);
+
+        next();
+    } catch(error) {
+        if(error instanceof HttpError) {
+            res.status(error.statusCode).send(error.message);
         }else {
             res.status(500).send(error.message);
         }
@@ -102,4 +102,4 @@ const deleteTaskValidator = (req, res, next) => {
       }
 }
 
-module.exports = {getTasksValidator, postTaskValidator, putTaskValidator, patchTaskValidator, deleteTaskValidator};
+module.exports = {getTaskValidator, postTaskValidator, putTaskValidator, patchTaskValidator, deleteTaskValidator};
